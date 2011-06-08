@@ -25,11 +25,6 @@ def main
   else
     parse_folder(input_folder, output_folder, preset)
   end
-
-
-  #p "input_folder -> %s" % input_folder
-  #p "output_folder -> %s" % output_folder
-  #p "preset -> %s" % preset
 end
 
 def convert_single_file(output_folder, file, preset)
@@ -91,7 +86,6 @@ def parse_arguments
     opts.on( '-f', '--file FILE', "File name to convert" ) do|i|
       options[:filename] = i
     end
-
   end.parse!
 
   return options
