@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -wKU
 
-OUTPUTFOLDER = "/home/ebruning/itunes/wmv/"
+OUTPUTFOLDER = "/home/ebruning/itunes/"
 
 $movies = Dir.glob("*")
 $start_time = Time.now
