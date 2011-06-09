@@ -2,6 +2,9 @@
 
 require 'optparse'
 
+#TODO: Better error handling for directories/files
+#TODO: Handle handbrake errors
+
 ##### Default values
 OUTPUT_FOLDER = "/home/ebruning/itunes/"
 INPUT_FOLDER = "./"
@@ -54,7 +57,6 @@ def set_output_directory(dir)
   return dir
 end
 
-#TODO: Better error handling
 def validate_arguments(options)
   if options[:filename] != "" and options[:input_folder] != ""
     puts "Cannot specify a directory and file at the same time"
@@ -97,14 +99,18 @@ end
 
 def print_status(count)
 	puts ""
-	puts "Conversion started: " + $start_time.to_s
-	puts "Movies converted:   " + count.to_s
-	puts "Time ellapsed:      " + get_elapsed_time.to_s + " seconds"
+	puts "Conversion started: %s" % $start_time.to_s
+	puts "Movies converted:   %s" % count.to_s
+	puts "Time ellapsed:      %s" % get_elapsed_time
 	puts ""
 end
 
 def get_elapsed_time()
-	(Time.now - $start_time)/360
+  mm, ss = ((Time.now - $start_time).to_f).divmod(60)
+  hh, mm = mm.divmod(60)
+  dd, hh = hh.divmod(24)
+
+	return "%d days %d hours %d minutes %d seconds" % [dd, hh, mm, ss]
 end
 
 def convert_movie(output_folder, file, preset)
