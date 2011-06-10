@@ -24,7 +24,7 @@ def main
       convert_single_file(output_folder, options[:filename], preset)
     else
       input_folder = options[:input_folder] != "" ? set_input_directory(options[:input_folder]) : INPUT_FOLDER
-      parse_folder(input_folder, output_folder, preset)
+      convert_folder(input_folder, output_folder, preset)
     end
   rescue => e
     p "[ERROR]: %s" % e.message
@@ -36,7 +36,7 @@ def convert_single_file(output_folder, file, preset)
     raise IOError, "Movie file to convert not found"
   end
   puts "Converting %s => %s" % [ file, convert_name(output_folder, file) ]
-  convert_movie(output_folder, file, preset)
+  puts "(%s)" % convert_movie(output_folder, file, preset)
   print_status(1)
 end
 
@@ -113,16 +113,21 @@ end
 
 def convert_movie(output_folder, file, preset)
   system("HandBrakeCLI -i %s -o %s --preset %s >/dev/null 2>&1" % [file, convert_name(output_folder, file), preset])
+  return get_error_code($? >> 8)
 end
 
-def parse_folder(input_folder, output_folder, preset)
+def get_error_code(code)
+  return code == 0 ? "Completed" : "Failed"
+end
+
+def convert_folder(input_folder, output_folder, preset)
   count = 1
   movies = Dir.glob(File.join(input_folder, "*"))
   movies.each do |movie|
   	if File.file?(movie) == true
   		if File.exists?(convert_name(output_folder, movie)) == false
-  			puts "[%02d/%02d] Converting %s => %s" % [ count, movies.count, movie, convert_name(output_folder, movie) ]
-  			convert_movie(output_folder, movie, preset)
+  			puts "[%02d/%02d] Converting %s => %s (%s)" % [ count, movies.count, movie, convert_name(output_folder, movie), convert_movie(output_folder, movie, preset) ]
+  			puts "(%s)" % convert_movie(output_folder, movie, preset)
   			count = count + 1
   		else
   			puts "Skipping %s (output file already exsist)" % movie
