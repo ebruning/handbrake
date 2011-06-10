@@ -2,9 +2,6 @@
 
 require 'optparse'
 
-#TODO: Better error handling for directories/files
-#TODO: Handle handbrake errors
-
 ##### Default values
 OUTPUT_FOLDER = "/home/ebruning/itunes/"
 INPUT_FOLDER = "./"
