@@ -14,23 +14,26 @@ def main
   puts ""
   options = parse_arguments
 
-  validate_arguments(options)
+  begin
+    validate_arguments(options)
 
-  input_folder = options[:input_folder] != "" ? set_input_directory(options[:input_folder]) : INPUT_FOLDER
-  output_folder = options[:output_folder] != "" ? set_output_directory(options[:output_folder]) : OUTPUT_FOLDER
-  preset = options[:preset] != "" ? options[:preset] : PRESETS
+    output_folder = options[:output_folder] != "" ? set_output_directory(options[:output_folder]) : OUTPUT_FOLDER
+    preset = options[:preset] != "" ? options[:preset] : PRESETS
 
-  if options[:filename] != ""
-    convert_single_file(output_folder, options[:filename], preset)
-  else
-    parse_folder(input_folder, output_folder, preset)
+    if options[:filename] != ""
+      convert_single_file(output_folder, options[:filename], preset)
+    else
+      input_folder = options[:input_folder] != "" ? set_input_directory(options[:input_folder]) : INPUT_FOLDER
+      parse_folder(input_folder, output_folder, preset)
+    end
+  rescue => e
+    p "[ERROR]: %s" % e.message
   end
 end
 
 def convert_single_file(output_folder, file, preset)
   if !File.exists?(file)
-    puts "File not found"
-    exit
+    raise IOError, "Movie file to convert not found"
   end
   puts "Converting %s => %s" % [ file, convert_name(output_folder, file) ]
   convert_movie(output_folder, file, preset)
@@ -39,8 +42,7 @@ end
 
 def set_input_directory(dir)
   if !File.exists?(dir)
-    puts "Input folder doesn't exists"
-    exit
+    raise IOError, "Input folder doesn't exists"
   end
 
   return dir
@@ -56,8 +58,7 @@ end
 
 def validate_arguments(options)
   if options[:filename] != "" and options[:input_folder] != ""
-    puts "Cannot specify a directory and file at the same time"
-    exit
+    raise ArgumentError, "Cannot specify a directory and file at the same time"
   end
 end
 
@@ -111,7 +112,6 @@ def get_elapsed_time()
 end
 
 def convert_movie(output_folder, file, preset)
-#  system("HandBrakeCLI -i " + input + " -o " + convert_name(input) + " --preset \"AppleTV 2\" >/dev/null 2>&1")
   system("HandBrakeCLI -i %s -o %s --preset %s >/dev/null 2>&1" % [file, convert_name(output_folder, file), preset])
 end
 
@@ -125,7 +125,7 @@ def parse_folder(input_folder, output_folder, preset)
   			convert_movie(output_folder, movie, preset)
   			count = count + 1
   		else
-  			puts "Skipping %s (already exsist)" % movie
+  			puts "Skipping %s (output file already exsist)" % movie
   		end
   	end
   end
