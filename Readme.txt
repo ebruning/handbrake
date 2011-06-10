@@ -9,3 +9,5 @@ Usage:
 To Do:
 * Better error handling
 * Handle the handbrake errors better
+* Default output extension
+* Specify output extension
