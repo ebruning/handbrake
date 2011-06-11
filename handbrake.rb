@@ -31,15 +31,6 @@ def main
   end
 end
 
-def convert_single_file(output_folder, file, preset)
-  if !File.exists?(file)
-    raise IOError, "Movie file to convert not found"
-  end
-  puts "Converting %s => %s" % [ file, convert_name(output_folder, file) ]
-  puts "(%s)" % convert_movie(output_folder, file, preset)
-  print_status(1)
-end
-
 def set_input_directory(dir)
   if !File.exists?(dir)
     raise IOError, "Input folder doesn't exists"
@@ -118,6 +109,15 @@ end
 
 def get_error_code(code)
   return code == 0 ? "Completed" : "Failed"
+end
+
+def convert_single_file(output_folder, file, preset)
+  if !File.exists?(file)
+    raise IOError, "Movie file to convert not found"
+  end
+  puts "Converting %s => %s" % [ file, convert_name(output_folder, file) ]
+  puts "(%s)" % convert_movie(output_folder, file, preset)
+  print_status(1)
 end
 
 def convert_folder(input_folder, output_folder, preset)

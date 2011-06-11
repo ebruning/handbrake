@@ -11,3 +11,5 @@ To Do:
 * Handle the handbrake errors better
 * Default output extension
 * Specify output extension
+* Add Log file
+* Fix count so it doesn't include folders
