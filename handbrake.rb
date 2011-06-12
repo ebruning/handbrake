@@ -131,7 +131,7 @@ def convert_folder(input_folder, output_folder, preset)
   movies.each do |movie|
   	if File.file?(movie) == true
   		if File.exists?(get_output_folder_name(output_folder, movie)) == false
-  			puts "[%02d/%02d] Converting %s => %s (%s)" % [ count, movies.count, movie, get_output_folder_name(output_folder, movie), convert_movie(output_folder, movie, preset) ]
+  			puts "[%02d/%02d] Converting %s => %s" % [ count, movies.count, movie, get_output_folder_name(output_folder, movie) ]
   			puts "(%s)" % convert_movie(output_folder, movie, preset)
   			count = count + 1
   		else
