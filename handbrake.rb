@@ -7,6 +7,7 @@ OUTPUT_FOLDER = "/home/ebruning/itunes/"
 INPUT_FOLDER = "./"
 PRESETS = "AppleTV 2"
 LOGFILE = ""
+EXTENSION = ".m4v"
 
 $start_time = Time.now
 
@@ -82,8 +83,12 @@ def parse_arguments
   return options
 end
 
-def convert_name(output_folder, name)
-	return output_folder + File.basename(name, File.extname(name)) + ".m4v"
+def convert_name(name)
+  return File.basename(name, File.extname(name)) + EXTENSION
+end
+
+def get_output_folder_name(output_folder, name)
+  return File.join(output_folder, convert_name(name))
 end
 
 def print_status(count)
@@ -103,7 +108,7 @@ def get_elapsed_time()
 end
 
 def convert_movie(output_folder, file, preset)
-  system("HandBrakeCLI -i %s -o %s --preset %s >/dev/null 2>&1" % [file, convert_name(output_folder, file), preset])
+  system("HandBrakeCLI -i %s -o %s --preset %s >/dev/null 2>&1" % [file, get_output_folder_name(output_folder, file), preset])
   return get_error_code($? >> 8)
 end
 
@@ -115,7 +120,7 @@ def convert_single_file(output_folder, file, preset)
   if !File.exists?(file)
     raise IOError, "Movie file to convert not found"
   end
-  puts "Converting %s => %s" % [ file, convert_name(output_folder, file) ]
+  puts "Converting %s => %s" % [ file, get_output_folder_name(output_folder, file) ]
   puts "(%s)" % convert_movie(output_folder, file, preset)
   print_status(1)
 end
@@ -125,8 +130,8 @@ def convert_folder(input_folder, output_folder, preset)
   movies = Dir.glob(File.join(input_folder, "*"))
   movies.each do |movie|
   	if File.file?(movie) == true
-  		if File.exists?(convert_name(output_folder, movie)) == false
-  			puts "[%02d/%02d] Converting %s => %s (%s)" % [ count, movies.count, movie, convert_name(output_folder, movie), convert_movie(output_folder, movie, preset) ]
+  		if File.exists?(get_output_folder_name(output_folder, movie)) == false
+  			puts "[%02d/%02d] Converting %s => %s (%s)" % [ count, movies.count, movie, get_output_folder_name(output_folder, movie), convert_movie(output_folder, movie, preset) ]
   			puts "(%s)" % convert_movie(output_folder, movie, preset)
   			count = count + 1
   		else
