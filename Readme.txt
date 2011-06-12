@@ -13,3 +13,5 @@ To Do:
 * Specify output extension
 * Add Log file
 * Fix count so it doesn't include folders
+* Fix file name when there is a parentheses
+* Don't display Date/Hour when 0
